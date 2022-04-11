@@ -2,7 +2,7 @@ import randomFromList from '../functions/randomFromList';
 import getNames from './getNames';
 import { Worker, POSITIONS, MAX_BASKETBALL_APTITUDE, Assignment } from './worker';
 
-export default function createWorkers(amount: number): Worker[] {
+export default function createWorkers(amount: number, sorted:boolean = true): Worker[] {
   //Sorted by basketball Aptitude
   const workers: Worker[] = getNames(amount).map(name => {
     const worker: Worker = {
@@ -13,6 +13,6 @@ export default function createWorkers(amount: number): Worker[] {
     }
     return worker
   })
-  workers.sort((a, b) => b.basketBallAptitude - a.basketBallAptitude)
+  if(sorted) workers.sort((a, b) => b.basketBallAptitude - a.basketBallAptitude)
   return workers
 }
