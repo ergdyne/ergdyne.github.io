@@ -24,7 +24,7 @@ export enum Assignment {
 
 export const MAX_BASKETBALL_APTITUDE = 100
 
-export interface Worker {
+export interface Citizen {
   name: String
   preferredPosition: Position
   basketBallAptitude: number
