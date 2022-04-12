@@ -16,7 +16,7 @@ const GAME_DATA = 'GAME_DATA'
 
 export interface GameData {
   draft: Citizen[][]
-  scavangeNumbers: number[]
+  scavengerNumbers: number[]
   extraCitizens: Citizen[]
   scoutNumbers: number
   scountMax: number
@@ -33,11 +33,11 @@ export function createAndSetGameData(
   additionalCitizens: number = ADDITIONAL_CITIZENS,
 ): GameData {
   const draft = runDraft(governors, initialCitizens)
-  const scavangeNumbers = randomSummation(scoutNumbers, scountMax)
+  const scavengerNumbers = randomSummation(scoutNumbers, scountMax)
   const extraCitizens = createCitizens(additionalCitizens, false)
   const gameData: GameData = {
     draft,
-    scavangeNumbers,
+    scavengerNumbers,
     extraCitizens,
     scoutNumbers,
     scountMax,

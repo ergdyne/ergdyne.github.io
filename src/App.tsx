@@ -1,5 +1,7 @@
 import React from 'react';
 import './App.css';
+import DraftResults from './display/DraftResults';
+import ScavengerTotals from './display/ScavengerTotals';
 import { getOrCreateGameData } from './mockAPI/localStorage';
 
 
@@ -8,16 +10,17 @@ import { getOrCreateGameData } from './mockAPI/localStorage';
 
 function App() {
   // TEMP Logging
-  console.log(getOrCreateGameData())
+  const gameData = getOrCreateGameData()
+  console.log(gameData)
 
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Check the console for the results
-        </p>
-      </header>
-    </div>
+      <h3>Scavenger Values</h3>
+      <ScavengerTotals values={gameData.scavengerNumbers || []} />
+      <br/>
+      <h3>Draft Results</h3>
+      <DraftResults draftResults={gameData.draft} />
+  </div>
   );
 }
 
