@@ -77,3 +77,7 @@ export function resetGameData() {
     gameData.additionalCitizens,
   )
 }
+
+export function updateGameData(gameData: GameData) {
+  localStorage.setItem(GAME_DATA, JSON.stringify(gameData))
+}

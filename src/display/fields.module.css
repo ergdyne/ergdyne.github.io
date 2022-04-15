@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  padding: 10px;
+}
+
+.label {
+  padding-right: 10px;
+}
+
+.textField {
+  padding-right: 10px;
+}
