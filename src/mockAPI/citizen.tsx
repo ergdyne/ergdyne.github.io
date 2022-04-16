@@ -30,5 +30,5 @@ export interface Citizen {
   basketBallAptitude: number
   assignment: Assignment
   assignedPosition?: Position
-  //Store other information such as injury and current skill
+  //Store other information such as injury and current skill and UID
 }

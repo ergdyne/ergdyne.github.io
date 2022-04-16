@@ -5,8 +5,9 @@ import './App.css';
 import DraftResults from './display/DraftResults';
 import TextField from './display/TextField';
 import ScavengerTotals from './display/ScavengerTotals';
-import { getOrCreateGameData, resetGameData, updateGameData } from './mockAPI/localStorage';
+import { getOrCreateGameData, resetGameData, updateGameData, updatePositionAssignment } from './mockAPI/localStorage';
 import DistrictCitizens from './display/DistrictCitizens';
+import { Position } from './mockAPI/citizen';
 
 
 //Change these to change output
@@ -54,7 +55,7 @@ function App() {
   function updateData(){
     //For when using actual API
     setDisabled(true)
-    updateGameData(gameData)
+    setGameData(updateGameData(gameData))
     setDisabled(false)
   }
 
@@ -74,6 +75,9 @@ function App() {
     additionalCitizens, setAdditionalCitizens, updateAdditionalCitizens, updateData
   )
 
+  updatePositionAssignment(gameData, 0, gameData.draft[0][0], Position.Center)
+  updatePositionAssignment(gameData, 0, gameData.draft[0][1], Position.Center)
+  updatePositionAssignment(gameData, 0, gameData.draft[0][2], Position.ShootingGuard)
 
   return (
     <div className="App">

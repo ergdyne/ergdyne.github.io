@@ -13,7 +13,7 @@ function aboutCitizen(citizen: Citizen): string {
   let result = `Basketball aptitude of ${citizen.basketBallAptitude}. `
   
   if (citizen.assignedPosition) {
-    result = result + `They are playing ${citizen.assignment}, `
+    result = result + `They are playing ${citizen.assignedPosition}, `
     if (
       citizen.assignedPosition == citizen.preferredPosition ||
       citizen.preferredPosition == Position.Generalist
