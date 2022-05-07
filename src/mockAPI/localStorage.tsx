@@ -112,22 +112,20 @@ function citizenUpdater(
   }
   const citizens = gameData.draft[district]
   const roster = gameData.rosters[district]
-  if (citizen.assignedPosition) {
-    const position = citizen.assignedPosition
-    const oldPlayer = roster.get(position)
-    for(let i = 0; i < citizens.length; i++) {
-      if (oldPlayer) {
-        if (citizens[i].name === oldPlayer.name) {
-          citizens[i].assignedPosition = undefined
-        }
-      }
-      if (citizens[i].name === citizen.name) {
-        citizens[i].assignedPosition = position
-        citizens[i].assignment = Assignment.Training
+  const position = citizen.assignedPosition
+  const oldPlayer = !position ? undefined : roster.get(position)
+  for(let i = 0; i < citizens.length; i++) {
+    if (oldPlayer && oldPlayer.name) {
+      if (citizens[i].name === oldPlayer.name) {
+        citizens[i].assignedPosition = undefined
       }
     }
-    roster.set(position, citizen)
+    if (citizens[i].name === citizen.name) {
+      citizens[i] = citizen
+    }
   }
+  if (position) roster.set(position, citizen)
+  
   return updateGameData(gameData)
 }
 

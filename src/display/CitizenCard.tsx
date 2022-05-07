@@ -2,8 +2,10 @@ import React, { useCallback } from 'react'
 import {
   Citizen,
   Position,
+  Assignment,
   MAX_BASKETBALL_APTITUDE,
   POSITION_OPTIONS,
+  ASSIGNMENT_OPTIONS,
 } from '../mockAPI/citizen'
 import RadioField from './RadioField'
 
@@ -49,12 +51,24 @@ export default function CitizenCard(props: Props) {
 
   const updatePosition = useCallback((position: string | number) => {
     citizen.assignedPosition = position as Position
+    citizen.assignment = Assignment.Training
+    if(update) update(citizen)
+  }, [update, citizen])
+
+  const updateWorkAssignment = useCallback((assignment: string | number) => {
+    citizen.assignment = assignment as Assignment
     if(update) update(citizen)
   }, [update, citizen])
 
   return (<div>
-    <h5>{`${citizen.name} - ${citizen.assignment}`}</h5>
-    <p> {aboutCitizen(citizen)} </p>
+    <h5>{citizen.name}</h5>
+    <RadioField
+      options={ASSIGNMENT_OPTIONS}
+      onChange={updateWorkAssignment}
+      disabled={disabled}
+      inline={true}
+      value={citizen.assignment}
+    />
     <RadioField
       options={POSITION_OPTIONS}
       onChange={updatePosition}
@@ -62,5 +76,6 @@ export default function CitizenCard(props: Props) {
       inline={true}
       value={citizen.assignedPosition}
     />
+    <p> {aboutCitizen(citizen)} </p>
   </div>)
 }
