@@ -97,11 +97,10 @@ export function updateGameData(gameData: GameData): GameData {
   return gameData
 }
 
-export function updatePositionAssignment(
+function citizenUpdater(
   gameData: GameData,
   district: number,
-  citizen: Citizen,
-  position: Position
+  citizen: Citizen
 ): GameData {
   if (gameData.draft.length <= district) {
     console.log("Error updatePositionAssignment: invalid district ", district, gameData)
@@ -113,20 +112,28 @@ export function updatePositionAssignment(
   }
   const citizens = gameData.draft[district]
   const roster = gameData.rosters[district]
-  const oldPlayer = roster.get(position)
-
-  for(let i = 0; i < citizens.length; i++) {
-    if (oldPlayer) {
-      if (citizens[i].name === oldPlayer.name) {
-        citizens[i].assignedPosition = undefined
+  if (citizen.assignedPosition) {
+    const position = citizen.assignedPosition
+    const oldPlayer = roster.get(position)
+    for(let i = 0; i < citizens.length; i++) {
+      if (oldPlayer) {
+        if (citizens[i].name === oldPlayer.name) {
+          citizens[i].assignedPosition = undefined
+        }
+      }
+      if (citizens[i].name === citizen.name) {
+        citizens[i].assignedPosition = position
+        citizens[i].assignment = Assignment.Training
       }
     }
-    if (citizens[i].name === citizen.name) {
-      citizens[i].assignedPosition = position
-      citizens[i].assignment = Assignment.Training
-    }
+    roster.set(position, citizen)
   }
-  roster.set(position, citizen)
-  updateGameData(gameData)
-  return gameData
+  return updateGameData(gameData)
+}
+
+export function updateCitizen(
+  district: number,
+  citizen: Citizen
+): GameData {
+  return citizenUpdater(getOrCreateGameData(), district, citizen)
 }

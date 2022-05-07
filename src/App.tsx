@@ -5,9 +5,14 @@ import './App.css';
 import DraftResults from './display/DraftResults';
 import TextField from './display/TextField';
 import ScavengerTotals from './display/ScavengerTotals';
-import { getOrCreateGameData, resetGameData, updateGameData, updatePositionAssignment } from './mockAPI/localStorage';
+import {
+  getOrCreateGameData,
+  resetGameData,
+  updateGameData,
+  updateCitizen,
+} from './mockAPI/localStorage';
 import DistrictCitizens from './display/DistrictCitizens';
-import { Position } from './mockAPI/citizen';
+import { Citizen } from './mockAPI/citizen';
 
 
 //Change these to change output
@@ -46,6 +51,15 @@ function App() {
     setDisabled(false)
   }, [resetGameData])
 
+  const updateCitizenData = useCallback(
+    (district: number, citizen: Citizen) => {
+      setDisabled(true)
+      setGameData(updateCitizen(district, citizen))
+      setDisabled(false)
+    },
+    [gameData]
+  )
+
   function updateScoutNumbers(x: number) { gameData.scoutNumbers = x }
   function updateScoutMax(x: number) { gameData.scoutMax = x }
   function updateGovernors(x: number) { gameData.governors = x }
@@ -74,10 +88,6 @@ function App() {
   const changeAdditionalCitizens = onChangeGameDataBuilder(
     additionalCitizens, setAdditionalCitizens, updateAdditionalCitizens, updateData
   )
-
-  updatePositionAssignment(gameData, 0, gameData.draft[0][0], Position.Center)
-  updatePositionAssignment(gameData, 0, gameData.draft[0][1], Position.Center)
-  updatePositionAssignment(gameData, 0, gameData.draft[0][2], Position.ShootingGuard)
 
   return (
     <div className="App">
@@ -117,7 +127,11 @@ function App() {
       <ScavengerTotals values={gameData.scavengerNumbers || []} />
       <br/>
       <h3>Draft Results</h3>
-      <DraftResults draftResults={gameData.draft} />
+      <DraftResults
+        draftResults={gameData.draft}
+        updateCitizen={updateCitizenData}
+        disabled={disabled}
+      />
 
       <br/>
       <h3>Additional Citizens</h3>

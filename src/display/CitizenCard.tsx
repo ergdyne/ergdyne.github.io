@@ -9,7 +9,8 @@ import RadioField from './RadioField'
 
 interface Props {
   citizen: Citizen
-  update: (c: Citizen) => void
+  disabled: boolean
+  update?: (c: Citizen) => void
 }
 
 function displayPreferred(position: Position): string {
@@ -44,13 +45,11 @@ function aboutCitizen(citizen: Citizen): string {
 }
 
 export default function CitizenCard(props: Props) {
-  const { citizen, update } = props
+  const { citizen, update, disabled } = props
 
   const updatePosition = useCallback((position: string | number) => {
     citizen.assignedPosition = position as Position
-    console.log(`Changed to ${position}`)
-    console.log(citizen)
-    update(citizen)
+    if(update) update(citizen)
   }, [update, citizen])
 
   return (<div>
@@ -59,7 +58,7 @@ export default function CitizenCard(props: Props) {
     <RadioField
       options={POSITION_OPTIONS}
       onChange={updatePosition}
-      disabled={false}
+      disabled={disabled}
       inline={true}
       value={citizen.assignedPosition}
     />
