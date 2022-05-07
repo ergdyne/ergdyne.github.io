@@ -1,0 +1,24 @@
+.section {
+  float: left;
+  border-style: solid;
+  border-color: white;
+  width: 20%;
+  border-width: 1px;
+  height: 100%;
+  padding: 10px;
+}
+
+.name {
+  margin: 5px;
+  float: left;
+  width: 65%;
+}
+
+.score {
+  margin: 5px;
+  float: left;
+}
+
+.citizen {
+  display: flex;
+}

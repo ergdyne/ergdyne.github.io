@@ -5,31 +5,34 @@ import fields from "./fields.module.css"
 
 interface OptionProps {
   option: Option
-  onChange: (value: string | number) => void
+  onChange: (value: string) => void
   value?: string
+  preferedValue?: string
+  disabled?: boolean
 }
-
 
 interface Props {
   options: Option[]
-  onChange: (value: string | number) => void
+  onChange: (value: string) => void
   disabled?: boolean
   label?: string
   inline?: boolean
   value?: string
+  preferedValue?: string
 }
 
 const RadioOption = (props: OptionProps): JSX.Element => {
-  const { option, value, onChange } = props
+  const { option, value, onChange, preferedValue, disabled } = props
   const onClick = useCallback(() => { onChange(option.value) }, [option, onChange])
   const selected = option.value === value
+  const variant = selected ? "warning" : (preferedValue === option.value ? "secondary" : "dark")
 
   return (
     <Button
       className={fields.radioToggle}
       onClick={onClick}
-      disabled={selected}
-      variant={selected ? "light" : "dark"}
+      disabled={selected || disabled}
+      variant={variant}
     >
       {option.label}  
     </Button>
@@ -37,7 +40,7 @@ const RadioOption = (props: OptionProps): JSX.Element => {
 }
 
 const RadioField = (props: Props): JSX.Element => {
-  const { value, options, onChange, disabled, label, inline } = props
+  const { value, options, onChange, disabled, label, inline, preferedValue } = props
   return (
     <div className={`${fields.container} ${fields.radioNoWrap} ${inline ? fields.left : ''}`}>
       {label ? <div className={fields.label}>{label}</div> : <></>}
@@ -46,6 +49,8 @@ const RadioField = (props: Props): JSX.Element => {
           option={option}
           value={value}
           onChange={onChange}
+          disabled={disabled}
+          preferedValue={preferedValue}
         />)
       }
     </div>
