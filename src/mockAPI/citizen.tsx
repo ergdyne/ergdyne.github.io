@@ -1,3 +1,6 @@
+
+import Option from "../types/Option"
+
 export enum Position {
   PointGuard = 'Point Guard',
   ShootingGuard = 'Shooting Guard',
@@ -15,6 +18,10 @@ export const POSITIONS: Position[] = [
   Position.ShootingGuard,
   Position.SmallForward,
 ]
+
+export const POSITION_OPTIONS: Option[] = POSITIONS.filter(
+  x => x !== Position.Generalist
+).map(x => { return { label: x, value: x } })
 
 export enum Assignment {
   Labor = 'Labor',

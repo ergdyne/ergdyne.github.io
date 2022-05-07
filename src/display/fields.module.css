@@ -10,3 +10,15 @@
 .textField {
   padding-right: 10px;
 }
+
+.radioNoWrap {
+  white-space: nowrap;
+}
+
+.radioOption {
+  margin: 5px;
+}
+
+.radioToggle {
+  margin: 5px;
+}
