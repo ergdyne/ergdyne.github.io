@@ -12,7 +12,10 @@
 }
 
 .radioNoWrap {
-  white-space: nowrap;
+  border-style: solid;
+  border-color: white;
+  width: fit-content;
+  border-width: 1px;
 }
 
 .radioOption {
@@ -21,4 +24,8 @@
 
 .radioToggle {
   margin: 5px;
+}
+
+.left {
+  float: left;
 }

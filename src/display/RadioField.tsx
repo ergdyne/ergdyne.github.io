@@ -39,7 +39,7 @@ const RadioOption = (props: OptionProps): JSX.Element => {
 const RadioField = (props: Props): JSX.Element => {
   const { value, options, onChange, disabled, label, inline } = props
   return (
-    <div className={`${fields.container} ${inline ? fields.radioNoWrap : ''}`}>
+    <div className={`${fields.container} ${fields.radioNoWrap} ${inline ? fields.left : ''}`}>
       {label ? <div className={fields.label}>{label}</div> : <></>}
       { options.map(option => <RadioOption
           key={option.value}

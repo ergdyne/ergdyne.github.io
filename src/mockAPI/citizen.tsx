@@ -29,6 +29,14 @@ export enum Assignment {
   Training = 'Training',
 }
 
+export const ASSIGNMENTS: Assignment[] = [
+  Assignment.Labor,
+  Assignment.Scavenger,
+  Assignment.Training
+]
+
+export const ASSIGNMENT_OPTIONS: Option[] = ASSIGNMENTS.map(x => { return { label: x, value: x } })
+
 export const MAX_BASKETBALL_APTITUDE = 100
 
 export interface Citizen {
