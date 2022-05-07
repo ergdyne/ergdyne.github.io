@@ -1,18 +1,18 @@
-import React from "react"
-import { urlToHttpOptions } from "url"
+import React, { useCallback } from "react"
+import Button from 'react-bootstrap/Button'
 import Option from "../types/Option"
 import fields from "./fields.module.css"
 
 interface OptionProps {
   option: Option
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (value: string | number) => void
   value?: string
 }
 
 
 interface Props {
   options: Option[]
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (value: string | number) => void
   disabled?: boolean
   label?: string
   inline?: boolean
@@ -21,17 +21,18 @@ interface Props {
 
 const RadioOption = (props: OptionProps): JSX.Element => {
   const { option, value, onChange } = props
+  const onClick = useCallback(() => { onChange(option.value) }, [option, onChange])
+  const selected = option.value === value
+
   return (
-    <label className={fields.radioOption}>
-      <input
-        className={fields.radioToggle}
-        type="radio"
-        value={option.value}
-        checked={option.value === value}
-        onChange={onChange}
-      />
-      {option.label}
-    </label>
+    <Button
+      className={fields.radioToggle}
+      onClick={onClick}
+      disabled={selected}
+      variant={selected ? "light" : "dark"}
+    >
+      {option.label}  
+    </Button>
   )
 }
 

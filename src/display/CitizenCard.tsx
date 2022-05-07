@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import {
   Citizen,
   Position,
@@ -9,6 +9,7 @@ import RadioField from './RadioField'
 
 interface Props {
   citizen: Citizen
+  update: (c: Citizen) => void
 }
 
 function displayPreferred(position: Position): string {
@@ -43,13 +44,21 @@ function aboutCitizen(citizen: Citizen): string {
 }
 
 export default function CitizenCard(props: Props) {
-  const { citizen} = props
+  const { citizen, update } = props
+
+  const updatePosition = useCallback((position: string | number) => {
+    citizen.assignedPosition = position as Position
+    console.log(`Changed to ${position}`)
+    console.log(citizen)
+    update(citizen)
+  }, [update, citizen])
+
   return (<div>
     <h5>{`${citizen.name} - ${citizen.assignment}`}</h5>
     <p> {aboutCitizen(citizen)} </p>
     <RadioField
       options={POSITION_OPTIONS}
-      onChange={()=> console.log("changed")}
+      onChange={updatePosition}
       disabled={false}
       inline={true}
       value={citizen.assignedPosition}

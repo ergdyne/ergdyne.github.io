@@ -12,6 +12,10 @@ export default function DistrictCitizens(props: Props) {
   return (<div>
     <br/>
     {(districtNumber) ? <h4>{`District ${districtNumber}`}</h4> : <div/>}
-    {citizens.map((citizen, i) => <CitizenCard key={i} citizen={citizen}/>)}
+    {citizens.map((citizen, i) => <CitizenCard
+        key={i} citizen={citizen}
+        update={() => console.log("update citizen")}
+      />
+    )}
   </div>)
 }
