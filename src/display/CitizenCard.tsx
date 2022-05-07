@@ -8,6 +8,8 @@ import {
   ASSIGNMENT_OPTIONS,
 } from '../mockAPI/citizen'
 import RadioField from './RadioField'
+import citizencard from "./citizencard.module.css"
+import { Button, OverlayTrigger, Tooltip, TooltipProps } from 'react-bootstrap'
 
 interface Props {
   citizen: Citizen
@@ -20,19 +22,24 @@ function displayPreferred(position: Position): string {
 }
 
 function aboutCitizen(citizen: Citizen): string {
-  let result = `Basketball aptitude of ${citizen.basketBallAptitude}. `
+  let result = ``
   
   if (citizen.assignedPosition) {
     result = result + `They are playing ${citizen.assignedPosition}, `
-    if (
+    if ((
       citizen.assignedPosition == citizen.preferredPosition ||
-      citizen.preferredPosition == Position.Generalist
+      citizen.preferredPosition == Position.Generalist) &&
+      citizen.basketBallAptitude > 0.5 * MAX_BASKETBALL_APTITUDE
     ) {
       result = result + 'and '
     } else {
       result = result + 'but '
     }
-    result = result + `they prefer playing ${citizen.preferredPosition}`
+    if (citizen.basketBallAptitude > 0.5 * MAX_BASKETBALL_APTITUDE) {
+      result = result + `they prefer playing ${citizen.preferredPosition}`
+    } else {
+      result = result + `they would rather not.`
+    }
   } else {
     result = result + `They are currently working in ${citizen.assignment}. `
     if (citizen.basketBallAptitude > 0.5 * MAX_BASKETBALL_APTITUDE) {
@@ -60,22 +67,39 @@ export default function CitizenCard(props: Props) {
     if(update) update(citizen)
   }, [update, citizen])
 
-  return (<div>
-    <h5>{citizen.name}</h5>
-    <RadioField
-      options={ASSIGNMENT_OPTIONS}
-      onChange={updateWorkAssignment}
-      disabled={disabled}
-      inline={true}
-      value={citizen.assignment}
-    />
-    <RadioField
-      options={POSITION_OPTIONS}
-      onChange={updatePosition}
-      disabled={disabled}
-      inline={true}
-      value={citizen.assignedPosition}
-    />
-    <p> {aboutCitizen(citizen)} </p>
-  </div>)
+  const citizenBlurb = (p: TooltipProps) => (
+    <Tooltip {...p}> {aboutCitizen(citizen)} </Tooltip>
+  )
+
+  return (
+    <div className={citizencard.citizen}>
+      <OverlayTrigger
+        placement='right'
+        delay={{ show: 250, hide: 400 }}
+        overlay={citizenBlurb}
+      >
+        <div className={citizencard.section} >
+          <Button className={citizencard.name} variant='dark' > {citizen.name} </Button>
+          <Button className={citizencard.score} variant='dark' >
+            {citizen.basketBallAptitude}
+          </Button>
+        </div>
+      </OverlayTrigger>
+      <RadioField
+        options={ASSIGNMENT_OPTIONS}
+        onChange={updateWorkAssignment}
+        disabled={disabled}
+        inline={true}
+        value={citizen.assignment}
+      />
+      <RadioField
+        options={POSITION_OPTIONS}
+        onChange={updatePosition}
+        disabled={disabled}
+        inline={true}
+        value={citizen.assignedPosition}
+        preferedValue={citizen.preferredPosition}
+      />
+    </div>
+  )
 }

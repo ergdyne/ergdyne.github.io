@@ -1,4 +1,5 @@
 import { debug } from "console"
+import { rmSync } from "fs"
 import randomSummation from "../functions/randomSummation"
 import { Assignment, Citizen, Position } from "./citizen"
 import createCitizens from "./createCitizens"
@@ -121,6 +122,8 @@ function citizenUpdater(
       }
     }
     if (citizens[i].name === citizen.name) {
+      const oldPosition = citizens[i].assignedPosition
+      if (oldPosition && citizen.assignedPosition !== oldPosition) roster.set(oldPosition, null)
       citizens[i] = citizen
     }
   }
