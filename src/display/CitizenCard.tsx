@@ -1,5 +1,11 @@
 import React from 'react'
-import { Citizen, MAX_BASKETBALL_APTITUDE, Position } from '../mockAPI/citizen'
+import {
+  Citizen,
+  Position,
+  MAX_BASKETBALL_APTITUDE,
+  POSITION_OPTIONS,
+} from '../mockAPI/citizen'
+import RadioField from './RadioField'
 
 interface Props {
   citizen: Citizen
@@ -41,5 +47,12 @@ export default function CitizenCard(props: Props) {
   return (<div>
     <h5>{`${citizen.name} - ${citizen.assignment}`}</h5>
     <p> {aboutCitizen(citizen)} </p>
+    <RadioField
+      options={POSITION_OPTIONS}
+      onChange={()=> console.log("changed")}
+      disabled={false}
+      inline={true}
+      value={citizen.assignedPosition}
+    />
   </div>)
 }
