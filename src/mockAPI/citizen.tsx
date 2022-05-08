@@ -1,6 +1,13 @@
 
 import Option from "../types/Option"
 
+export const SCORES = {
+  trainingOn: 2,
+  trainingOff: -1,
+  matchesPosition: 10,
+  generalist: 5
+}
+
 export enum Position {
   PointGuard = 'Point Guard',
   ShootingGuard = 'Shooting Guard',
@@ -44,6 +51,7 @@ export interface Citizen {
   preferredPosition: Position
   basketBallAptitude: number
   assignment: Assignment
+  trainingValue: number
   assignedPosition?: Position
   //Store other information such as injury and current skill and UID
 }

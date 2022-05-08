@@ -13,6 +13,7 @@ import {
 } from './mockAPI/localStorage';
 import DistrictCitizens from './display/DistrictCitizens';
 import { Citizen } from './mockAPI/citizen';
+import { OverlayTrigger, Tooltip, TooltipProps } from 'react-bootstrap';
 
 
 //Change these to change output
@@ -34,6 +35,7 @@ function onChangeGameDataBuilder(
 }
 
 function App() {
+  const [showReset, setShowReset] = useState(false);
   const [disabled, setDisabled] = useState(false)
   const [gameData, setGameData] = useState(getOrCreateGameData())
   const [scoutNumbers, setScoutNumbers] = useState(gameData.scoutNumbers.toString())
@@ -89,10 +91,21 @@ function App() {
     additionalCitizens, setAdditionalCitizens, updateAdditionalCitizens, updateData
   )
 
+  const clickReset = useCallback(() => setShowReset(!showReset), [showReset, setShowReset])
+
+  const confirmReset = (p: TooltipProps) => (
+    <Tooltip {...p}> {
+      <div>
+        <h1>{`Are you sure you want to Reset?`}</h1>
+        <h3>{`All data will be lost`}</h3>
+        <Button variant='danger' onClick={resetData}>{`Yes, Reset the Game`}</Button>
+      </div>
+    } </Tooltip>
+  )
+
   return (
     <div className="App">
-      <Button disabled={disabled} variant='warning' onClick={resetData}>Reset Game</Button>
-      <h3>Configuration</h3>
+      <h3>{`Configuration - Scroll to bottom to reset`}</h3>
       <TextField
         label={"Total Scavenger Values"}
         value={scoutNumbers}
@@ -136,7 +149,13 @@ function App() {
       <br/>
       <h3>Additional Citizens</h3>
       <DistrictCitizens citizens={gameData.extraCitizens}/>
-
+      <OverlayTrigger
+        placement='top'
+        delay={{ show: 250, hide: 400 }}
+        overlay={confirmReset}
+      >
+        <Button disabled={disabled} variant='warning' onClick={clickReset}>Reset Game</Button>
+      </OverlayTrigger>
   </div>
   );
 }

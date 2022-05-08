@@ -58,7 +58,6 @@ export default function CitizenCard(props: Props) {
 
   const updatePosition = useCallback((position: string | number) => {
     citizen.assignedPosition = position as Position
-    citizen.assignment = Assignment.Training
     if(update) update(citizen)
   }, [update, citizen])
 

@@ -21,4 +21,5 @@
 
 .citizen {
   display: flex;
+  overflow: hidden;
 }
