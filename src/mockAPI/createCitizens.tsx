@@ -10,6 +10,7 @@ export default function createCitizens(amount: number, sorted:boolean = true): C
       basketBallAptitude: Math.ceil(Math.random() * MAX_BASKETBALL_APTITUDE),
       preferredPosition: randomFromList(POSITIONS),
       assignment: Assignment.Labor,
+      trainingValue: 0,
     }
     return citizen
   })
