@@ -1,8 +1,7 @@
-import { debug } from "console"
-import { rmSync } from "fs"
 import randomSummation from "../functions/randomSummation"
-import { Assignment, Citizen, Position } from "./citizen"
+import { Assignment, Citizen, Position, SCORES } from "./citizen"
 import createCitizens from "./createCitizens"
+import { District } from "./district"
 import runDraft from "./runDraft"
 
 const SCOUT_NUMBERS = 20
@@ -16,7 +15,7 @@ const ADDITIONAL_CITIZENS = 20
 const GAME_DATA = 'GAME_DATA'
 
 export const EMPTY_GAME_DATA: GameData = {
-  draft: [[]],
+  draft: [],
   rosters: [],
   scavengerNumbers: [],
   extraCitizens: [],
@@ -25,6 +24,7 @@ export const EMPTY_GAME_DATA: GameData = {
   governors: 0,
   initialCitizens: 0,
   additionalCitizens: 0,
+  round: 0,
 }
 
 const EMPTY_ROSTER: Map<Position, Citizen | null> = new Map<Position, Citizen | null>()
@@ -32,7 +32,7 @@ EMPTY_ROSTER.set(Position.Center, null)
 
 
 export interface GameData {
-  draft: Citizen[][]
+  draft: District[]
   rosters: Map<Position, Citizen | null>[]
   scavengerNumbers: number[]
   extraCitizens: Citizen[]
@@ -41,6 +41,7 @@ export interface GameData {
   governors: number
   initialCitizens: number
   additionalCitizens: number
+  round: number
 }
 
 export function createAndSetGameData(
@@ -63,7 +64,8 @@ export function createAndSetGameData(
     scoutMax,
     governors,
     initialCitizens,
-    additionalCitizens
+    additionalCitizens,
+    round: 0,
   }
   
   return updateGameData(gameData)
@@ -111,11 +113,11 @@ function citizenUpdater(
     console.log("Error updatePositionAssignment: no rosters", district, gameData)
     return gameData
   }
-  const citizens = gameData.draft[district]
+  const citizens = gameData.draft[district].citizens
   const roster = gameData.rosters[district]
   const position = citizen.assignedPosition
   const oldPlayer = !position ? undefined : roster.get(position)
-  for(let i = 0; i < citizens.length; i++) {
+  for (let i = 0; i < citizens.length; i++) {
     if (oldPlayer && oldPlayer.name) {
       if (citizens[i].name === oldPlayer.name) {
         citizens[i].assignedPosition = undefined
@@ -137,4 +139,24 @@ export function updateCitizen(
   citizen: Citizen
 ): GameData {
   return citizenUpdater(getOrCreateGameData(), district, citizen)
+}
+
+export function progressRound(): GameData {
+  const gameData = getOrCreateGameData()
+  for (let d = 0; d < gameData.draft.length; d++) {
+    const maxTraining =
+      gameData.draft[d].facilities.advancedTraining ? SCORES.advancedFacility : SCORES.basicFacility
+    for (let c = 0; c < gameData.draft[d].citizens.length; c++) {
+      const citizen = gameData.draft[d].citizens[c]
+      let trainingValue = citizen.trainingValue
+      if (citizen.assignment === Assignment.Training) {
+        trainingValue = Math.min(maxTraining, trainingValue + SCORES.trainingOn)
+      } else {
+        trainingValue = Math.max(0, trainingValue + SCORES.trainingOff)
+      }
+      gameData.draft[d].citizens[c].trainingValue = trainingValue
+    }
+  }
+  gameData.round += 1
+  return updateGameData(gameData)
 }

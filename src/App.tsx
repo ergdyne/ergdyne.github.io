@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import Button from 'react-bootstrap/Button'
 
-import './App.css';
 import DraftResults from './display/DraftResults';
 import TextField from './display/TextField';
 import ScavengerTotals from './display/ScavengerTotals';
@@ -10,10 +9,12 @@ import {
   resetGameData,
   updateGameData,
   updateCitizen,
+  progressRound,
 } from './mockAPI/localStorage';
 import DistrictCitizens from './display/DistrictCitizens';
 import { Citizen } from './mockAPI/citizen';
 import { OverlayTrigger, Tooltip, TooltipProps } from 'react-bootstrap';
+import app from "./app.module.css"
 
 
 //Change these to change output
@@ -62,6 +63,15 @@ function App() {
     [gameData]
   )
 
+  const nextRound = useCallback(
+    () => {
+      setDisabled(true)
+      setGameData(progressRound())
+      setDisabled(false)
+    },
+    [gameData]
+  )
+
   function updateScoutNumbers(x: number) { gameData.scoutNumbers = x }
   function updateScoutMax(x: number) { gameData.scoutMax = x }
   function updateGovernors(x: number) { gameData.governors = x }
@@ -104,7 +114,7 @@ function App() {
   )
 
   return (
-    <div className="App">
+    <div className={app.App}>
       <h3>{`Configuration - Scroll to bottom to reset`}</h3>
       <TextField
         label={"Total Scavenger Values"}
@@ -136,6 +146,12 @@ function App() {
         onChange={changeAdditionalCitizens}
         disabled={disabled}
       />
+      <h3>{`Current Round is ${gameData.round}`}</h3>
+      <div className={app.width25Percent}>
+        <Button variant='warning' disabled={disabled} onClick={nextRound}>
+          {`Progress Round`}
+        </Button>
+      </div>
       <h3>Scavenger Values</h3>
       <ScavengerTotals values={gameData.scavengerNumbers || []} />
       <br/>

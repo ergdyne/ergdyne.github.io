@@ -1,11 +1,12 @@
 import React from 'react'
 import { Citizen, Position, SCORES } from '../mockAPI/citizen'
+import { District } from '../mockAPI/district'
 import CitizenCard from './CitizenCard'
 
 interface Props {
   citizens: Citizen[]
   updateCitizen?: (c: Citizen) => void
-  districtNumber?: number
+  district?: District
   disabled?: boolean
 }
 
@@ -14,7 +15,7 @@ interface Props {
 // Training +2 / week, -1/week, range 0 - (5 or 10 (if advanced facility))
 
 export default function DistrictCitizens(props: Props) {
-  const { districtNumber, citizens, updateCitizen, disabled } = props
+  const { district, citizens, updateCitizen, disabled } = props
   const teamTotal = citizens.map(citizen => {
     let value = 0
     if (citizen.assignedPosition) {
@@ -29,8 +30,8 @@ export default function DistrictCitizens(props: Props) {
     <div>
       <br/>
       {
-        (districtNumber) ?
-        <h4>{`District ${districtNumber} | Last Round Score: ${teamTotal}`}</h4> :
+        (district) ?
+        <h4>{`District ${district.name} | Last Round Score: ${teamTotal}`}</h4> :
         <div/>
       }
       {citizens.map((citizen, i) => <CitizenCard

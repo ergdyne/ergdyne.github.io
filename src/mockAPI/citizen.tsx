@@ -5,7 +5,9 @@ export const SCORES = {
   trainingOn: 2,
   trainingOff: -1,
   matchesPosition: 10,
-  generalist: 5
+  generalist: 5,
+  basicFacility: 5,
+  advancedFacility: 10,
 }
 
 export enum Position {
