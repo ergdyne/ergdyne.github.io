@@ -188,6 +188,7 @@ function App() {
       <OverlayTrigger
         placement='top'
         overlay={confirmReset}
+        delay={{ show: 250, hide: 400 }}
       >
         <Button disabled={disabled} variant='warning' onClick={clickReset}>Reset Game</Button>
       </OverlayTrigger>
