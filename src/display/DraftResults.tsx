@@ -7,10 +7,17 @@ interface Props {
   draftResults: District[]
   updateCitizen: (district: number, citizen: Citizen) => void
   disabled: boolean
+  districtNames: Map<String, number> 
+  moveCitizen: (
+    currentDistrict: number | null,
+    citizen: Citizen,
+    newDistrict: number | null
+  ) => void
+
 }
 
 export default function DraftResults(props: Props) {
-  const { draftResults, updateCitizen, disabled } = props
+  const { draftResults, updateCitizen, disabled, moveCitizen, districtNames } = props
   return (<div>
     { draftResults.map((district, i) => {
         const citizens = district.citizens
@@ -18,6 +25,12 @@ export default function DraftResults(props: Props) {
           (citizen: Citizen) => { updateCitizen(i, citizen) },
           [citizens, i]
         )
+
+        const moveDistrictCitizen = (
+          citizen: Citizen,
+          newDistrict: number | null
+        ) => moveCitizen(i, citizen, newDistrict)
+
         return (
           <DistrictCitizens
             key={i}
@@ -25,6 +38,8 @@ export default function DraftResults(props: Props) {
             district={district}
             updateCitizen={citizenUpdate}
             disabled={disabled}
+            districtNames={districtNames}
+            moveCitizen={moveDistrictCitizen}
           />
         )
       })
