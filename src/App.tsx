@@ -10,6 +10,7 @@ import {
   updateGameData,
   updateCitizen,
   progressRound,
+  moveCitizen,
 } from './mockAPI/localStorage';
 import DistrictCitizens from './display/DistrictCitizens';
 import { Citizen } from './mockAPI/citizen';
@@ -62,6 +63,19 @@ function App() {
     },
     [gameData]
   )
+
+  const citizenMover = useCallback((
+    currentDistrict: number | null,
+    citizen: Citizen,
+    newDistrict: number | null
+  ) => {
+    setDisabled(true)
+    setGameData(moveCitizen(currentDistrict, citizen, newDistrict))
+    setDisabled(false)
+  }, [moveCitizen])
+
+  const draftCitizen =
+    (citizen: Citizen, newDistrict: number | null) => citizenMover(null, citizen, newDistrict)
 
   const nextRound = useCallback(
     () => {
@@ -159,15 +173,20 @@ function App() {
       <DraftResults
         draftResults={gameData.draft}
         updateCitizen={updateCitizenData}
+        districtNames={gameData.districtNames}
         disabled={disabled}
+        moveCitizen={citizenMover}
       />
 
       <br/>
       <h3>Additional Citizens</h3>
-      <DistrictCitizens citizens={gameData.extraCitizens}/>
+      <DistrictCitizens
+        citizens={gameData.extraCitizens}
+        districtNames={gameData.districtNames}
+        moveCitizen={draftCitizen}
+      />
       <OverlayTrigger
         placement='top'
-        delay={{ show: 250, hide: 400 }}
         overlay={confirmReset}
       >
         <Button disabled={disabled} variant='warning' onClick={clickReset}>Reset Game</Button>

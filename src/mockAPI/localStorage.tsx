@@ -10,7 +10,7 @@ const SCOUT_MAX = 40
 const GOVERNORS = 16
 const INITIAL_CITIZENS = 10
 
-const ADDITIONAL_CITIZENS = 20
+const ADDITIONAL_CITIZENS = 50
 
 const GAME_DATA = 'GAME_DATA'
 
@@ -25,6 +25,7 @@ export const EMPTY_GAME_DATA: GameData = {
   initialCitizens: 0,
   additionalCitizens: 0,
   round: 0,
+  districtNames: new Map<String, number>()
 }
 
 const EMPTY_ROSTER: Map<Position, Citizen | null> = new Map<Position, Citizen | null>()
@@ -42,6 +43,7 @@ export interface GameData {
   initialCitizens: number
   additionalCitizens: number
   round: number
+  districtNames: Map<String, number>
 }
 
 export function createAndSetGameData(
@@ -55,6 +57,8 @@ export function createAndSetGameData(
   const scavengerNumbers = randomSummation(scoutNumbers, scoutMax)
   const extraCitizens = createCitizens(additionalCitizens, false)
   const rosters = draft.map( _ => new Map(EMPTY_ROSTER))
+  const districtNames = new Map<String, number>()
+  draft.forEach((district, i) => districtNames.set(district.name, i))
   const gameData: GameData = {
     draft,
     rosters,
@@ -66,6 +70,7 @@ export function createAndSetGameData(
     initialCitizens,
     additionalCitizens,
     round: 0,
+    districtNames,
   }
   
   return updateGameData(gameData)
@@ -75,6 +80,7 @@ export function getOrCreateGameData() {
   const gameData: string | null = localStorage.getItem(GAME_DATA)
   const result: GameData = gameData ? JSON.parse(gameData) : createAndSetGameData()
   //convert objects to maps
+  result.districtNames = new Map(Object.entries(result.districtNames)) as Map<String, number>
   result.rosters = result.rosters.map(r => new Map(Object.entries(r)) as Map<Position, Citizen | null>)
   return result
 }
@@ -94,9 +100,11 @@ export function updateGameData(gameData: GameData): GameData {
   const tempData: any = gameData
   //handle conversion to objects
   tempData.rosters = gameData.rosters.map(r => Object.fromEntries(r))
+  tempData.districtNames = Object.fromEntries(gameData.districtNames)
   localStorage.setItem(GAME_DATA, JSON.stringify(tempData))
   //Handle conversion back to map
   gameData.rosters = gameData.rosters.map(r => new Map(Object.entries(r)) as Map<Position, Citizen | null>)
+  gameData.districtNames = new Map(Object.entries(gameData.districtNames))
   return gameData
 }
 
@@ -141,6 +149,35 @@ export function updateCitizen(
   return citizenUpdater(getOrCreateGameData(), district, citizen)
 }
 
+export function moveCitizen(
+  currentDistrict: number | null,
+  citizen: Citizen,
+  newDistrict: number | null
+): GameData {
+  const gameData = getOrCreateGameData()
+  if (currentDistrict === null) {
+    const citizens = gameData.extraCitizens
+    gameData.extraCitizens = citizens.filter(c => c.name !== citizen.name)
+  } else {
+    const citizens = gameData.draft[currentDistrict].citizens
+    gameData.draft[currentDistrict].citizens = citizens.filter(c => c.name !== citizen.name)
+    if (citizen.assignedPosition) {
+      const roster = gameData.rosters[currentDistrict]
+      roster.set(citizen.assignedPosition, null)
+      gameData.rosters[currentDistrict] = roster
+    }
+  }
+
+  if (newDistrict !== null) {
+    const citizens = gameData.draft[newDistrict].citizens
+    citizens.push(citizen)
+    citizens.sort((a, b) => b.basketBallAptitude - a.basketBallAptitude)
+    gameData.draft[newDistrict].citizens = citizens
+  }
+
+  return updateGameData(gameData)
+}
+
 export function progressRound(): GameData {
   const gameData = getOrCreateGameData()
   for (let d = 0; d < gameData.draft.length; d++) {
@@ -156,6 +193,11 @@ export function progressRound(): GameData {
       }
       gameData.draft[d].citizens[c].trainingValue = trainingValue
     }
+  }
+
+  if (gameData.extraCitizens.length < gameData.additionalCitizens) {
+    createCitizens(gameData.additionalCitizens - gameData.extraCitizens.length, false)
+      .forEach(citizen => gameData.extraCitizens.push(citizen))
   }
   gameData.round += 1
   return updateGameData(gameData)
