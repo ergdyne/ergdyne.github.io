@@ -202,3 +202,9 @@ export function progressRound(): GameData {
   gameData.round += 1
   return updateGameData(gameData)
 }
+
+export function updateDistrictAPI(districtNumber: number, district: District) {
+  const gameData = getOrCreateGameData()
+  gameData.draft[districtNumber] = district
+  return updateGameData(gameData)
+}

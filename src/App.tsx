@@ -11,11 +11,13 @@ import {
   updateCitizen,
   progressRound,
   moveCitizen,
+  updateDistrictAPI,
 } from './mockAPI/localStorage';
 import DistrictCitizens from './display/DistrictCitizens';
 import { Citizen } from './mockAPI/citizen';
 import { OverlayTrigger, Tooltip, TooltipProps } from 'react-bootstrap';
 import app from "./app.module.css"
+import { District } from './mockAPI/district';
 
 
 //Change these to change output
@@ -99,6 +101,16 @@ function App() {
     setDisabled(false)
   }
 
+  const updateDistrict = (districtNumber: number, district: District) => {
+    setDisabled(true)
+    setGameData(updateDistrictAPI(districtNumber, district))
+    setDisabled(false)
+  }
+
+  const districtUpdater = (districtNumber: number) => {
+    return (district: District) => updateDistrict(districtNumber, district)
+  }
+
   const changeScoutNumbers = onChangeGameDataBuilder(
     scoutNumbers, setScoutNumbers, updateScoutNumbers, updateData
   )
@@ -176,6 +188,7 @@ function App() {
         districtNames={gameData.districtNames}
         disabled={disabled}
         moveCitizen={citizenMover}
+        updateDistrict={districtUpdater}
       />
 
       <br/>
@@ -184,6 +197,7 @@ function App() {
         citizens={gameData.extraCitizens}
         districtNames={gameData.districtNames}
         moveCitizen={draftCitizen}
+        disabled={disabled}
       />
       <OverlayTrigger
         placement='top'
